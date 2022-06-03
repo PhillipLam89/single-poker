@@ -6,6 +6,8 @@ seeFlopButton.disabled = true
 const currentBestHand = document.querySelector('#current-best-hand')
 const switchViewButton = document.querySelector('#toggleMode')
 const mainContainer = document.querySelector('.main-container')
+const audio = new Audio('./card-sound.mp3')
+const switchAudio = new Audio('./switch-screen.mp3')
 let hasFlopBeenShown = false
 let hasTurnCardBeenShown = false
 let hasRiverCardBeenShown = false
@@ -14,17 +16,26 @@ let playersHandCards = []
 let topModeView = true
 switchViewButton.addEventListener('click', function() {
     topModeView = !topModeView
+    switchAudio.play()
+    this.disabled = true
   if (!topModeView) {
     document.querySelector('#title > p').innerHTML = `<p>Poker Texas Hold' em </p>`
     mainContainer.classList.remove('top-mode')
       mainContainer.classList.add('bottom-mode')
+      switchAudio.play()
+      this.disabled = false
+
   } else {
     document.querySelector('#title > p').innerHTML = `<p>Poker Texas Hold' em </p>`
     mainContainer.classList.remove('bottom-mode')
     mainContainer.classList.add('top-mode')
+    switchAudio.play()
+    this.disabled = false
+
+
   }
 
-
+  // setTimeout(function() {this.disabled = false},5000)
 })
 
 let cardDeck = []
@@ -39,27 +50,27 @@ for (let i = 0; i < cardValues.length; i++) {
     }
 }
 
-const audio = new Audio('./card-sound.mp3');
+
 
 
 drawButton.addEventListener('click', function() {
 
-  audio.play()
-  const randomIndex1 = getRndInteger(0, cardDeck.length - 1)
-   const card1 = cardDeck.splice(randomIndex1, 1)
-   playersHandCards.push(card1)
-   const randomIndex2 = getRndInteger(0, cardDeck.length - 1)
-   const card2 = cardDeck.splice(randomIndex2, 1)
-   playersHandCards.push(card2)
+    audio.play()
+    const randomIndex1 = getRndInteger(0, cardDeck.length - 1)
+    const card1 = cardDeck.splice(randomIndex1, 1)
+    playersHandCards.push(card1)
+    const randomIndex2 = getRndInteger(0, cardDeck.length - 1)
+    const card2 = cardDeck.splice(randomIndex2, 1)
+    playersHandCards.push(card2)
 
-  document.querySelector('.card1  > .card-body').classList.toggle('rotate')
-  document.querySelector('.card2  > .card-body').classList.toggle('rotate')
-
-  setTimeout(function() {
     document.querySelector('.card1  > .card-body').classList.toggle('rotate')
     document.querySelector('.card2  > .card-body').classList.toggle('rotate')
-  document.querySelector('.card1  .card-front').innerHTML = `<p>Hover To See</p>`
-  document.querySelector('.card2  .card-front').innerHTML = `<p>Hover To See</p>`
+
+    setTimeout(function() {
+    document.querySelector('.card1  > .card-body').classList.toggle('rotate')
+    document.querySelector('.card2  > .card-body').classList.toggle('rotate')
+    document.querySelector('.card1  .card-front').innerHTML = `<p>Hover To See</p>`
+    document.querySelector('.card2  .card-front').innerHTML = `<p>Hover To See</p>`
 
     seeFlopButton.disabled = false
   },1400)
@@ -111,6 +122,7 @@ seeFlopButton.addEventListener('click', function(e) {
 
     setTimeout(function(){seeFlopButton.disabled = false}, 1400)
     currentBestHand.textContent = checkValueOfHand(playersHandCards)
+
     return checkValueOfHand(playersHandCards)
   }
 
@@ -177,8 +189,6 @@ function checkValueOfHand(arrayOfPlayerCards) {
 function objCountConstructor(arrayOfPlayerCards, desiredCategory) {
   //desiredCategory can be either 'name', 'value' or 'suit'
       const obj = {}
-
-
        for (const card of arrayOfPlayerCards) {
         if (!obj[`${card[desiredCategory]}`]) {
           obj[`${card[desiredCategory]}`] = 1
@@ -186,21 +196,6 @@ function objCountConstructor(arrayOfPlayerCards, desiredCategory) {
           obj[`${card[desiredCategory]}`]++
         }
     }
-
-  // else {
-  //     for (const card of arrayOfPlayerCards) {
-  //       if (!obj[`${card.suit}`]) {
-  //         obj[`${card.suit}`] = 1
-  //       } else {
-  //         obj[`${card.suit}`]++
-  //       }
-  //   }
-  // }
-
-
-
-    const objKeys =  Object.keys(obj)
-    const objValues =  Object.values(obj)
     return obj
 }
 
@@ -264,10 +259,6 @@ var test = [
 {name: 'Jack', value: 11, suit: 'Heas'}
 
 ]
-
-var sorted = test.sort((a,b) => {
-  if (a.value < b.value) return -1
-})
 
 function isItaFlushOrQuads(array) {
   console.log('isItaFlushOrQuads ran')
