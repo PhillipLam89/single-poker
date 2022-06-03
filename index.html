@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;800&display=swap"
+      rel="stylesheet"/>
+    <link rel="stylesheet" href="styles.css"/>
+    <script src="https://kit.fontawesome.com/54dd1c0248.js" crossorigin="anonymous"></script>
+    <title>Poker Hands Project</title>
+  </head>
+  <body>
+  <div id="title">
+    <p>Poker Texas Hold' em </p>
+    <!-- <p class="card-count">Cards left in deck: 52 </p> -->
+  </div>
+  <main class="main-container">
+
+    <section id="table">
+      <div class="table-cards-wrapper">
+        <div class="table-card-flop card-body">
+          <div class="table-card-front card-front">?</div>
+          <div class="table-card-back card-back">STOP CHEATING NO PEEKING<br>(Press See Flop)</div>
+        </div>
+        <div class="table-card-flop card-body">
+          <div class="table-card-front card-front">?</div>
+          <div class="table-card-back card-back">STOP CHEATING NO PEEKING<br>(Press See Flop)</div>
+        </div>
+        <div class="table-card-flop card-body">
+          <div class="table-card-front card-front">?</div>
+          <div class="table-card-back card-back">STOP CHEATING NO PEEKING<br>(Press See Flop)</div>
+        </div>
+        <div class="table-card-turn card-body">
+          <div class="table-card-front card-front">?</div>
+          <div class="table-card-back card-back">STOP CHEATING NO PEEKING<br>(Press See Turn)</div>
+        </div>
+        <div class="table-card-river card-body">
+          <div class="table-card-front card-front">?</div>
+          <div class="table-card-back card-back">STOP CHEATING NO PEEKING</div>
+        </div>
+      </div>
+
+
+
+
+    </section>
+    <div id="buttons-container">
+      <button id="drawCards">Draw Cards</button>
+      <button id="seeFlop">See Flop</button>
+      <button id="restart" onclick="window.location.reload()">Restart</button><br>
+      <button id="toggleMode">Switch View</button>
+    </div>
+    <section id="cards">
+      <h1>Current Best Hand:
+        <p id="current-best-hand">??</p>
+      </h1>
+
+
+      <div class="card card1">
+        <div class="card-body player-card">
+          <h3 class="card-front">??</h3>
+          <p class="card-back">
+            NOTHING HERE, Draw Cards
+          </p>
+        </div>
+      </div>
+
+      <div class="card card2">
+        <div class="card-body player-card">
+          <h3 class="card-front">??</h3>
+          <p>
+            <p class="card-back">
+              NOTHING HERE, Draw Cards
+            </p>
+
+          </p>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+    <script src="index.js"></script>
+  </body>
+</html>
