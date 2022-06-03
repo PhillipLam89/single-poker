@@ -88,6 +88,7 @@ h1 {
 .table-card-turn:hover,
 .table-card-river:hover {
   cursor: pointer;
+
   transform: rotateY(-180deg);
 }
 
@@ -178,7 +179,7 @@ cursor: not-allowed;
     opacity: 1;
   }
 }
-@media all and (max-width: 489px) {
+@media screen and (max-width: 391px) {
 
 
   body, .main-container {
@@ -186,7 +187,7 @@ cursor: not-allowed;
 
   }
   body {
-    display: flex;
+    display: grid;
     flex-direction: column;
 
     align-items: center;
@@ -196,28 +197,20 @@ cursor: not-allowed;
     height: 100vh;
     transform: scale(60%, 70%) translateX(-15%);
 
-
-    overflow: hidden;
-
   }
   .table-cards-wrapper {
     width: inherit;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
   .table-cards-wrapper > div {
-    transform: scale(1);
 
     width: 18px;
     height: 60px;
   }
   .table-cards-wrapper .card-back {
-    font-size: 1.35vw;
+    font-size: 3vw;
     text-align: center;
-
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  min-width: 100%;
 
   }
   /* .main-container {
