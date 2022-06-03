@@ -254,9 +254,10 @@ var test = [
  {name: '3', value: 3, suit: 'Hearts'},
  {name: '3', value: 3, suit: 'Hdds'},
 {name: '3', value:  3, suit: 'Hezxrts'},
-{name: '3', value: 3, suit: 'Hearts'},
-
-{name: 'Jack', value: 11, suit: 'Heas'}
+{name: '4', value: 4, suit: 'Hearszts'},
+{name: '5', value: 5, suit: 'Hearzts'},
+{name: '6', value: 6, suit: 'Hearts'},
+{name: '7', value: 7, suit: 'Heas'}
 
 ]
 
@@ -292,9 +293,6 @@ function checkQuads(array) {
   const objValues = Object.values(obj)
 
   quadHighName = objKeys[objValues.indexOf(Math.max(...objValues))]
-  console.log(quadHighName)
-  console.log(objKeys)
-console.log(objValues)
   return objValues.includes(4) ? `Four-of-a-Kind (${quadHighName}s)` : false
 }
 
@@ -346,6 +344,9 @@ function checkFullHouseAndTriples(array) {
     const objKeys = Object.keys(obj)
     const objValues = Object.values(obj)
 
+    console.log(objKeys)
+    console.log(objValues)
+
     let highSet = ''
     let lowSet = ''
     if (objValues.includes(3) && objValues.includes(2)) {
@@ -361,9 +362,11 @@ function checkFullHouseAndTriples(array) {
       if (val === 3) targetCount++
     }
 
-    if (targetCount === 1) {
+    if (targetCount === 1 && !checkStraight(array)) {
       const highestTriples = objKeys[objValues.lastIndexOf(3)]
       return `Three of a Kind ${highestTriples}s-High`
+    } else {
+        return checkStraight(array)
     }
 
     //This mean there are Two Sets-Of-3s, which is just a FULL House
@@ -432,9 +435,6 @@ function checkForHighStraight(array) {
 
    return `${currentHighestStraightValue}`
 }
-
-
-
 
 function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1) ) + min;
