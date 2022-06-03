@@ -39,10 +39,12 @@ for (let i = 0; i < cardValues.length; i++) {
     }
 }
 
-
+const audio = new Audio('./card-sound.mp3');
 
 
 drawButton.addEventListener('click', function() {
+
+  audio.play()
   const randomIndex1 = getRndInteger(0, cardDeck.length - 1)
    const card1 = cardDeck.splice(randomIndex1, 1)
    playersHandCards.push(card1)
@@ -82,6 +84,7 @@ seeFlopButton.addEventListener('click', function(e) {
 
    //to see and analyze best hand in the Flop
   if (!hasFlopBeenShown) {
+    audio.play()
       seeFlopButton.disabled = true
       hasFlopBeenShown = true
     const flopCardIndex1 = getRndInteger(0, cardDeck.length - 1)
@@ -112,6 +115,7 @@ seeFlopButton.addEventListener('click', function(e) {
   }
 
    if (hasFlopBeenShown && !hasTurnCardBeenShown) {
+     audio.play()
     hasTurnCardBeenShown = true
     const turnCardIndex = getRndInteger(0, cardDeck.length - 1)
     const turnCard = cardDeck.splice(turnCardIndex, 1)[0]
@@ -125,6 +129,7 @@ seeFlopButton.addEventListener('click', function(e) {
 
   }
     if (hasFlopBeenShown && hasTurnCardBeenShown) {
+      audio.play()
      hasRiverCardBeenShown = true
     const RiverCardIndex = getRndInteger(0, cardDeck.length - 1)
     const riverCard = cardDeck.splice(RiverCardIndex, 1)[0]
@@ -137,7 +142,9 @@ seeFlopButton.addEventListener('click', function(e) {
       const allCardBodies = document.querySelectorAll('.player-card')
 
       for (let i = 0; i < allCardBodies.length; i++) {
+
         allCardBodies[i].style.transform = `rotateY(-180deg)`
+        audio.play()
       }
 
     }, 1400)
@@ -152,15 +159,6 @@ seeFlopButton.addEventListener('click', function(e) {
 
 function checkValueOfHand(arrayOfPlayerCards) {
    console.log('checkValueOfHand ran')
-  // if (isItaFlushOrQuads(arrayOfPlayerCards)) {
-  //   return isItaFlushOrQuads(arrayOfPlayerCards)
-  // } else  {
-  //     if (checkQuads(arrayOfPlayerCards)) return checkQuads(arrayOfPlayerCards)
-  //     if (checkFullHouseAndTriples(arrayOfPlayerCards)) return checkFullHouseAndTriples(arrayOfPlayerCards)
-  //     if (checkStraight(arrayOfPlayerCards)) return checkStraight(arrayOfPlayerCards)
-  //     if (checkPairs(arrayOfPlayerCards))  return checkPairs(arrayOfPlayerCards)
-  // }
-
   let bestCurrentHand = ''
   const functionsArray = [isItaFlushOrQuads, checkQuads ,checkFullHouseAndTriples, checkStraight, checkPairs, checkHighCard]
   for (const myFunction of functionsArray) {
@@ -177,25 +175,27 @@ function checkValueOfHand(arrayOfPlayerCards) {
 }
 
 function objCountConstructor(arrayOfPlayerCards, desiredCategory) {
+  //desiredCategory can be either 'name', 'value' or 'suit'
       const obj = {}
 
-      if (desiredCategory === 'name') {
+
        for (const card of arrayOfPlayerCards) {
-        if (!obj[`${card.name}`]) {
-          obj[`${card.name}`] = 1
+        if (!obj[`${card[desiredCategory]}`]) {
+          obj[`${card[desiredCategory]}`] = 1
         } else {
-          obj[`${card.name}`]++
+          obj[`${card[desiredCategory]}`]++
         }
     }
-  }  else {
-      for (const card of arrayOfPlayerCards) {
-        if (!obj[`${card.suit}`]) {
-          obj[`${card.suit}`] = 1
-        } else {
-          obj[`${card.suit}`]++
-        }
-    }
-  }
+
+  // else {
+  //     for (const card of arrayOfPlayerCards) {
+  //       if (!obj[`${card.suit}`]) {
+  //         obj[`${card.suit}`] = 1
+  //       } else {
+  //         obj[`${card.suit}`]++
+  //       }
+  //   }
+  // }
 
 
 
@@ -258,10 +258,9 @@ function objCountConstructor(arrayOfPlayerCards, desiredCategory) {
 var test = [
  {name: '3', value: 3, suit: 'Hearts'},
  {name: '3', value: 3, suit: 'Hdds'},
-{name: '6', value:  6, suit: 'Hezxrts'},
-{name: '6', value: 6, suit: 'Hearts'},
-{name: '6', value: 6, suit: 'Hearts'},
-{name: '3', value: 3, suit: 'Heas'},
+{name: '3', value:  3, suit: 'Hezxrts'},
+{name: '3', value: 3, suit: 'Hearts'},
+
 {name: 'Jack', value: 11, suit: 'Heas'}
 
 ]
@@ -295,9 +294,17 @@ function isItaFlushOrQuads(array) {
 }
 function checkQuads(array) {
 
-  let quadHighName = ''
+  let quadHighName
+
   const obj = objCountConstructor(array, 'name')
-  return quadHighName ? `Quads (${quadHighName}-High)` : false
+  const objKeys = Object.keys(obj)
+  const objValues = Object.values(obj)
+
+  quadHighName = objKeys[objValues.indexOf(Math.max(...objValues))]
+  console.log(quadHighName)
+  console.log(objKeys)
+console.log(objValues)
+  return objValues.includes(4) ? `Four-of-a-Kind (${quadHighName}s)` : false
 }
 
 function checkFlush(array, givenSuit) {
