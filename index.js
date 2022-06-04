@@ -2,18 +2,32 @@ const cardValues = ['2','3','4','5','6','7','8','9', '10', 'Jack', 'Queen', 'Kin
 const cardSuits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
 const drawButton = document.querySelector('#drawCards')
 const seeFlopButton = document.querySelector('#seeFlop')
-seeFlopButton.disabled = true
+
 const currentBestHand = document.querySelector('#current-best-hand')
 const switchViewButton = document.querySelector('#toggleMode')
 const mainContainer = document.querySelector('.main-container')
 const audio = new Audio('./card-sound.mp3')
 const switchAudio = new Audio('./switch-screen.mp3')
+
 let hasFlopBeenShown = false
 let hasTurnCardBeenShown = false
 let hasRiverCardBeenShown = false
 
 let playersHandCards = []
 let topModeView = true
+
+var test = [
+{name: '3', value: 3, suit: 'Hearts'},
+{name: '3', value: 3, suit: 'Spades'},
+{name: '3', value: 3, suit: 'Clubs'},
+{name: '6', value:  6, suit: 'Clubs'},
+{name: '6', value: 6, suit: 'Hearts'},
+{name: '6', value: 6, suit: 'Hests'},
+{name: 'King', value: 13, suit: 'Hearts'}
+]
+
+seeFlopButton.disabled = true
+
 switchViewButton.addEventListener('click', function() {
     topModeView = !topModeView
     switchAudio.play()
@@ -153,11 +167,10 @@ seeFlopButton.addEventListener('click', function(e) {
     setTimeout(function(){
       const allCardBodies = document.querySelectorAll('.player-card')
 
-      for (let i = 0; i < allCardBodies.length; i++) {
-
-        allCardBodies[i].style.transform = `rotateY(-180deg)`
-        audio.play()
+      for (const element of allCardBodies) {
+        element.style.transform = `rotateY(-180deg)`
       }
+      audio.play()
 
     }, 1400)
     this.textContent = `Game Ended!`
@@ -172,7 +185,7 @@ seeFlopButton.addEventListener('click', function(e) {
 function checkValueOfHand(arrayOfPlayerCards) {
    console.log('checkValueOfHand ran')
   let bestCurrentHand = ''
-  const functionsArray = [isItaFlushOrQuads, checkQuads ,checkFullHouseAndTriples, checkStraight, checkPairs, checkHighCard]
+  const functionsArray = [isItFlushIfSoWhatKind, checkQuads ,checkFullHouseAndTriples, checkStraight, checkPairs, checkHighCard]
   for (const myFunction of functionsArray) {
     if (myFunction(arrayOfPlayerCards)) {
       bestCurrentHand =  myFunction(arrayOfPlayerCards)
@@ -199,70 +212,60 @@ function objCountConstructor(arrayOfPlayerCards, desiredCategory) {
     return obj
 }
 
- function checkHighCard(arrayOfPlayerCards) {
-    const obj = objCountConstructor(arrayOfPlayerCards, 'name')
-    const objKeys =  Object.keys(obj)
-    const objValues =  Object.values(obj)
+function checkHighCard(arrayOfPlayerCards) {
+  const obj = objCountConstructor(arrayOfPlayerCards, 'name')
+  const objKeys =  Object.keys(obj)
+  const objValues =  Object.values(obj)
 
-    console.log('CheckHighCard Keys', objKeys)
+  console.log('CheckHighCard Keys', objKeys)
 
-    return `${objKeys[objKeys.length-1]} High, ${objKeys[objKeys.length-2]}-Kicker`
+  return `${objKeys[objKeys.length-1]} High, ${objKeys[objKeys.length-2]}-Kicker`
 
- }
+}
 
-  function checkPairs(arrayOfPlayerCards) {
-    arrayOfPlayerCards.sort((a,b) => a.value < b.value ? -1 : a.value === b.value ? 0 : 1)
-    const obj = objCountConstructor(arrayOfPlayerCards, 'name')
+function checkPairs(arrayOfPlayerCards) {
+  console.log('check pairs ran')
+  arrayOfPlayerCards.sort((a,b) => a.value < b.value ? -1 : a.value === b.value ? 0 : 1)
+  const obj = objCountConstructor(arrayOfPlayerCards, 'name')
 
-    const objKeys =  Object.keys(obj)
-    const objValues =  Object.values(obj)
+  const objKeys =  Object.keys(obj)
+  const objValues =  Object.values(obj)
 
-    if (!objValues.includes(2)) return false
+// the code below means if there are no two cards of the same values then there are no pairs
+  if (!objValues.includes(2)) return false
 
-    console.log('final obj Keys', objKeys)
-    console.log('final obj Values', objValues)
+  const occurrences = PairOccurences(objKeys, objValues)
 
-    const occurrences = PairOccurences(objKeys, objValues)
+  if (occurrences === 1) return `Pair of ${objKeys[objValues.indexOf(2)]}s`
+  if (occurrences === 2) return `2 Pairs: ${objKeys[objValues.lastIndexOf(2)]}s & ${objKeys[objValues.indexOf(2)]}s Kicker`
+  if (occurrences === 3 ) {
+      //card names already sorted from low to high (2 => Ace) so first index of occurence = lowest value pair
+    objKeys.splice(objValues.indexOf(2), 1)
+    objValues.splice(objValues.indexOf(2), 1)
+    return `2 Pairs: ${objKeys[objValues.lastIndexOf(2)]}s & ${objKeys[objValues.indexOf(2)]}s Kicker`
+  }
+}
 
-    if (occurrences === 1) return `Pair of ${objKeys[objValues.indexOf(2)]}s`
-    if (occurrences === 2) return `2 Pairs: ${objKeys[objValues.lastIndexOf(2)]}s & ${objKeys[objValues.indexOf(2)]}s Kicker`
-    if (occurrences === 3 ) {
-        //card names already sorted from low to high so first index of occurence = lowest value pair
-      objKeys.splice(objValues.indexOf(2), 1)
-      objValues.splice(objValues.indexOf(2), 1)
-      return `2 Pairs: ${objKeys[objValues.lastIndexOf(2)]}s & ${objKeys[objValues.indexOf(2)]}s Kicker`
-    }
+function PairOccurences(arrayofObjKeys, arrayOfNumbersValues, desiredValue = 2) {
+
+  let occurrenceCount = 0
+  for (const number of arrayOfNumbersValues) {
+    if (desiredValue === number) occurrenceCount++
+  }
+  let has1Pair = occurrenceCount === 1 ? 1 : false
+  let has2Pairs = occurrenceCount === 2 ? 2 : false
+  let has3Pairs = occurrenceCount === 3 ? 3 : false
+
+  for (const howManyPairsDoWeHave of [has1Pair, has2Pairs, has3Pairs]) {
+    if (howManyPairsDoWeHave) return howManyPairsDoWeHave
   }
 
-  function PairOccurences(arrayofObjKeys, arrayOfNumbersValues, desiredValue = 2) {
+}
 
-    let occurrenceCount = 0
-    for (const number of arrayOfNumbersValues) {
-      if (desiredValue === number) occurrenceCount++
-    }
-    let has1Pair = occurrenceCount === 1 ? 1 : false
-    let has2Pairs = occurrenceCount === 2 ? 2 : false
-    let has3Pairs = occurrenceCount === 3 ? 3 : false
 
-    for (const howManyPairsDoWeHave of [has1Pair, has2Pairs, has3Pairs]) {
-      if (howManyPairsDoWeHave) return howManyPairsDoWeHave
-    }
 
-  }
-
-var test = [
- {name: '3', value: 3, suit: 'Hearts'},
- {name: '3', value: 3, suit: 'Hdds'},
-{name: '3', value:  3, suit: 'Hezxrts'},
-{name: '4', value: 4, suit: 'Hearszts'},
-{name: '5', value: 5, suit: 'Hearzts'},
-{name: '6', value: 6, suit: 'Hearts'},
-{name: '7', value: 7, suit: 'Heas'}
-
-]
-
-function isItaFlushOrQuads(array) {
-  console.log('isItaFlushOrQuads ran')
+function isItFlushIfSoWhatKind(array) {
+  console.log('isItFlushIfSoWhatKind ran')
   const obj = {}
   for (const card of array) {
     !obj[`${card.suit}`] ? obj[`${card.suit}`] = 1 : obj[`${card.suit}`]++
@@ -271,7 +274,7 @@ function isItaFlushOrQuads(array) {
   const objKeys = Object.keys(obj)
   const objValues = Object.values(obj)
 
-  // to have a flush, a playhers hand must have at least 5 of the same suits, denoted by objValues
+  // to have a flush, a players hand must have at least 5 of the same suits, denoted by objValues
 
   if ( Math.max(...objValues) >= 5)  {
       const amountOfFlushCards =  Math.max(...objValues)
@@ -296,11 +299,12 @@ function checkQuads(array) {
   return objValues.includes(4) ? `Four-of-a-Kind (${quadHighName}s)` : false
 }
 
-function checkFlush(array, givenSuit) {
+function checkFlush(array, givenSuit='[*Note: suit was not given as second argument]') {
    console.log('checkFlush ran')
+   // This function checks for TYPES of flush AFTER the last function isItaFlush returns true.
+   // Checks for royal/regular flushes
+   // Note that you CANNOT have BOTH a flush AND Quads w/ 2 draw cards + 5 community cards in Texas Hold 'em
   const initialValue = array[0].suit
-
-
       let highestCard = 0
       let handValue = 0
       const straightCheckValues = []
@@ -316,24 +320,28 @@ function checkFlush(array, givenSuit) {
 
       straightCheckValues.sort((a,b) => a-b)
       const royalFlushChecker = straightCheckValues.slice(straightCheckValues.length - 5, straightCheckValues.length)
-      console.log(royalFlushChecker)
 
-      if (straightCheckValues[straightCheckValues.length - 1] === 14 && royalFlushChecker.reduce((a,b) => a+b, 0) >= 60 && straightCheckValues.includes(13)) {
-        return `ROYALL FLUSHHHH`
-     }
-     if (checkStraight(array)) {
-            console.log('wopwow array', array)
-               return checkStraight(array) + ` FLUSH!!!`
-     }
-     if (!checkStraight(array) && checkQuads(array)) {
-          return `${checkQuads(array)}`
-     }
+      return straightCheckValues[straightCheckValues.length - 1] === 14 && royalFlushChecker.reduce((a,b) => a+b, 0) >= 60 && straightCheckValues.includes(13) ?
+            // Note that you must check for Royal Flush BEFORE Straight Flushes since an Ace can form the bottom end of a straight => A,2,3,4,5
+            // in Texas Hold 'em
+            `ROYALL FLUSHHHH` : checkStraight(array) ? // Note that you CANNOT have BOTH a flush AND Quads w/ 2 draw cards + 5 community cards in Texas Hold 'em
+            checkStraight(array) + ` FLUSH!!!` : `${convertToCardName(highestCard)}-High Flush ${givenSuit}`
 
 
-      highestCard = highestCard <= 10 ? highestCard :
-      highestCard === 11 ? 'Jack' : highestCard === 12 ? 'Queen' :
-      highestCard === 13 ? 'King' : 'Ace'
-      return `${highestCard}-High Flush ${givenSuit}`
+
+    // return straightCheckValues[straightCheckValues.length - 1] === 14 && royalFlushChecker.reduce((a,b) => a+b, 0) >= 60 && straightCheckValues.includes(13) ?
+    //        `ROYALL FLUSHHHH` :
+
+    //  if (checkStraight(array)) {
+    //         console.log('wopwow array', array)
+    //            return checkStraight(array) + ` FLUSH!!!`
+    //  }
+    //  if (!checkStraight(array) && checkQuads(array)) {
+    //       return `${checkQuads(array)}`
+    //  }
+
+
+    //   return `${convertToCardName(highestCard)}-High Flush ${givenSuit}`
 
 }
 
@@ -429,13 +437,22 @@ function checkForHighStraight(array) {
          currentHighestStraightValue = currentHighestStraightValue
       }
    }
-   currentHighestStraightValue = currentHighestStraightValue <= 10 ? currentHighestStraightValue :
-   currentHighestStraightValue === 11 ? 'Jack' : currentHighestStraightValue === 12 ? 'Queen' :
-   currentHighestStraightValue === 13 ? 'King' : 'Ace'
+   return convertToCardName(currentHighestStraightValue)
+  //  currentHighestStraightValue = currentHighestStraightValue <= 10 ? currentHighestStraightValue :
+  //  currentHighestStraightValue === 11 ? 'Jack' : currentHighestStraightValue === 12 ? 'Queen' :
+  //  currentHighestStraightValue === 13 ? 'King' : 'Ace'
 
-   return `${currentHighestStraightValue}`
+
 }
 
+function convertToCardName(faceCardValue) {
+  if (faceCardValue <= 10) return faceCardValue
+
+   return faceCardValue = faceCardValue === 11 ? 'Jack'
+          : faceCardValue === 12 ? 'Queen'
+          : faceCardValue === 13 ? 'King'
+          : 'Ace'
+}
 function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
