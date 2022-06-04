@@ -68,7 +68,7 @@ h1 {
   border: 11px solid rgb(109, 87, 109);
   background-color: rgb(3, 114, 114);
   height: 93%;
-  flex-direction: row;
+
   align-items: center;
   justify-content: center;
   /* gap: 2%; */
@@ -93,13 +93,11 @@ h1 {
   transform: rotateY(-180deg);
 }
 
-
-
 .main-container {
   height: 90vh;
+  /*  */
   display: flex;
   flex-direction: column-reverse;
-
 }
 #table {
 
