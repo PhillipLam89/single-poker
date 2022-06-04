@@ -59,9 +59,6 @@ for (let i = 0; i < cardValues.length; i++) {
     }
 }
 
-
-
-
 drawButton.addEventListener('click', function() {
 
     audio.play()
@@ -249,8 +246,6 @@ function PairOccurences(arrayofObjKeys, arrayOfNumbersValues, desiredValue = 2) 
 
 }
 
-
-
 function isItFlushIfSoWhatKind(array) {
   console.log('isItFlushIfSoWhatKind ran')
   const obj = {}
@@ -313,7 +308,6 @@ function checkFlush(array, givenSuit='[*Note: suit was not given as second argum
             // in Texas Hold 'em
             `ROYALL FLUSHHHH` : checkStraight(array) ? // Note that you CANNOT have BOTH a flush AND Quads w/ 2 draw cards + 5 community cards in Texas Hold 'em
             checkStraight(array) + ` FLUSH!!!` : `${convertToCardName(highestCard)}-High Flush ${givenSuit}`
-
 }
 
 function checkFullHouseAndTriples(array) {
@@ -347,15 +341,12 @@ function checkFullHouseAndTriples(array) {
     } else {
         return checkStraight(array)
     }
-
     //This mean there are Two Sets-Of-3s, which is just a FULL House
-
     if (targetCount === 2) {
         highSet = objKeys[objValues.lastIndexOf(3)]
         lowSet = objKeys[objValues.indexOf(3)]
       return `Full House of ${highSet}s w/ ${lowSet}-Kickers `
     }
-
   }
 
   return false
@@ -367,7 +358,6 @@ function checkStraight(array) {
   for (const card of array)  {
     possibleStraightValues.push(card.value)
   }
-
   possibleStraightValues = [...new Set(possibleStraightValues)].sort((a,b) => a-b)
 
   if (possibleStraightValues.length < 5) return false
@@ -375,22 +365,17 @@ function checkStraight(array) {
 
   let straightCount = 0
   let highestCard = ''
-
-
   for (let i = 0; i < consecutiveValues.length - 1; i++) {
       if (consecutiveValues[i] + 1 === consecutiveValues[i + 1]) {
         straightCount++
         if (straightCount === 4 ) {
           highestCard = checkForHighStraight(consecutiveValues)
           return `${highestCard}-High Straight`
-
         }
-
       } else {
         straightCount = 0
       }
   }
-
   return false
 }
 /////////////////////////////////////////
@@ -412,8 +397,6 @@ function checkForHighStraight(array) {
   //  currentHighestStraightValue = currentHighestStraightValue <= 10 ? currentHighestStraightValue :
   //  currentHighestStraightValue === 11 ? 'Jack' : currentHighestStraightValue === 12 ? 'Queen' :
   //  currentHighestStraightValue === 13 ? 'King' : 'Ace'
-
-
 }
 
 function convertToCardName(faceCardValue) {
