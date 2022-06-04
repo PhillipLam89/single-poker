@@ -28,28 +28,23 @@ var test = [
 
 seeFlopButton.disabled = true
 
-switchViewButton.addEventListener('click', function() {
+switchViewButton.addEventListener('click', function(e) {
     topModeView = !topModeView
     switchAudio.play()
     this.disabled = true
+    //arrow function below needed for 'this' keyword to function properly
+    // as we need it to refer to the html element
+      setTimeout( () => this.disabled = false ,2500)
   if (!topModeView) {
     document.querySelector('#title > p').innerHTML = `<p>Poker Texas Hold' em </p>`
     mainContainer.classList.remove('top-mode')
-      mainContainer.classList.add('bottom-mode')
-      switchAudio.play()
-      this.disabled = false
+    mainContainer.classList.add('bottom-mode')
 
   } else {
     document.querySelector('#title > p').innerHTML = `<p>Poker Texas Hold' em </p>`
     mainContainer.classList.remove('bottom-mode')
     mainContainer.classList.add('top-mode')
-    switchAudio.play()
-    this.disabled = false
-
-
   }
-
-  // setTimeout(function() {this.disabled = false},5000)
 })
 
 let cardDeck = []
@@ -80,19 +75,17 @@ drawButton.addEventListener('click', function() {
     document.querySelector('.card1  > .card-body').classList.toggle('rotate')
     document.querySelector('.card2  > .card-body').classList.toggle('rotate')
 
-    setTimeout(function() {
-    document.querySelector('.card1  > .card-body').classList.toggle('rotate')
-    document.querySelector('.card2  > .card-body').classList.toggle('rotate')
-    document.querySelector('.card1  .card-front').innerHTML = `<p>Hover To See</p>`
-    document.querySelector('.card2  .card-front').innerHTML = `<p>Hover To See</p>`
+          setTimeout(function() {
+          document.querySelector('.card1  > .card-body').classList.toggle('rotate')
+          document.querySelector('.card2  > .card-body').classList.toggle('rotate')
+          document.querySelector('.card1  .card-front').innerHTML = `<p>Hover To See</p>`
+          document.querySelector('.card2  .card-front').innerHTML = `<p>Hover To See</p>`
 
-    seeFlopButton.disabled = false
-  },1400)
+          seeFlopButton.disabled = false
+        },1400)
 
   document.querySelector('.card1  .card-back').innerHTML = `<p>${card1[0].fullName}</p>`
   document.querySelector('.card2  .card-back').innerHTML = `<p>${card2[0].fullName}</p>`
-
-
 
   document.querySelector('#current-best-hand').textContent = card1[0].value === card2[0].value ? `1-Pair (${card1[0].name})` :
   card1[0].value > card2[0].value ? `${card1[0].name}-High` : `${card2[0].name}-High`
@@ -101,12 +94,8 @@ drawButton.addEventListener('click', function() {
 
 })
 
-
-
 seeFlopButton.addEventListener('click', function(e) {
-
    seeFlopButton.textContent = cardDeck.length === 52 ? 'See Flop' : cardDeck.length === 50 ? 'See Turn'  : 'See River'
-
    //to see and analyze best hand in the Flop
   if (!hasFlopBeenShown) {
     audio.play()
@@ -155,8 +144,8 @@ seeFlopButton.addEventListener('click', function(e) {
 
   }
     if (hasFlopBeenShown && hasTurnCardBeenShown) {
-      audio.play()
-     hasRiverCardBeenShown = true
+    audio.play()
+    hasRiverCardBeenShown = true
     const RiverCardIndex = getRndInteger(0, cardDeck.length - 1)
     const riverCard = cardDeck.splice(RiverCardIndex, 1)[0]
     playersHandCards.push(riverCard)
@@ -164,22 +153,20 @@ seeFlopButton.addEventListener('click', function(e) {
     const riverCardDiv = document.querySelector('.table-card-river > .table-card-back')
     riverCardDiv.textContent  = riverCard.fullName
     riverCardDiv.parentElement.style.transform = `rotateY(-180deg)`
-    setTimeout(function(){
-      const allCardBodies = document.querySelectorAll('.player-card')
+          setTimeout(function(){
+            const allCardBodies = document.querySelectorAll('.player-card')
 
-      for (const element of allCardBodies) {
-        element.style.transform = `rotateY(-180deg)`
-      }
-      audio.play()
+            for (const element of allCardBodies) {
+              element.style.transform = `rotateY(-180deg)`
+            }
+            audio.play()
 
-    }, 1400)
+          }, 1400)
     this.textContent = `Game Ended!`
     this.disabled = true
     currentBestHand.textContent = checkValueOfHand(playersHandCards)
     return checkValueOfHand(playersHandCards)
-
    }
-
 })
 
 function checkValueOfHand(arrayOfPlayerCards) {
@@ -326,22 +313,6 @@ function checkFlush(array, givenSuit='[*Note: suit was not given as second argum
             // in Texas Hold 'em
             `ROYALL FLUSHHHH` : checkStraight(array) ? // Note that you CANNOT have BOTH a flush AND Quads w/ 2 draw cards + 5 community cards in Texas Hold 'em
             checkStraight(array) + ` FLUSH!!!` : `${convertToCardName(highestCard)}-High Flush ${givenSuit}`
-
-
-
-    // return straightCheckValues[straightCheckValues.length - 1] === 14 && royalFlushChecker.reduce((a,b) => a+b, 0) >= 60 && straightCheckValues.includes(13) ?
-    //        `ROYALL FLUSHHHH` :
-
-    //  if (checkStraight(array)) {
-    //         console.log('wopwow array', array)
-    //            return checkStraight(array) + ` FLUSH!!!`
-    //  }
-    //  if (!checkStraight(array) && checkQuads(array)) {
-    //       return `${checkQuads(array)}`
-    //  }
-
-
-    //   return `${convertToCardName(highestCard)}-High Flush ${givenSuit}`
 
 }
 
